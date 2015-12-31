@@ -1,6 +1,6 @@
 ## angular2-fullstack package
 
-For documentation and more information please see (http://angular2.jankuri.com)[http://angular2.jankuri.com].
+For documentation and more information please see [http://angular2.jankuri.com](http://angular2.jankuri.com).
 
 ## Licence
 
