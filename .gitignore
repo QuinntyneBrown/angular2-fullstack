@@ -3,3 +3,4 @@ dist/
 .tscache/
 .sass-cache/
 .sass-cache/*
+semantic/

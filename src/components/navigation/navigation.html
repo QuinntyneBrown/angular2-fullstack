@@ -1,0 +1,26 @@
+<div class="ui pointing container menu">
+  <a class="item" [routerLink]="['/Home']">
+    <img src="dist/assets/img/logos/shield-large.png">
+  </a>
+  <a class="item" [routerLink]="['/Home']" [class.active]="getLinkStyle('')">
+    <i class="icon home"></i>
+    Home
+  </a>
+  <a class="item" [routerLink]="['/Documentation']" [class.active]="getLinkStyle('/documentation')">
+    <i class="icon newspaper"></i>
+    Documentation
+  </a>
+  <a class="right item" [routerLink]="['/Login']" *ngIf="!loggedIn">
+    <i class="icon sign in"></i>
+    Login
+  </a>
+  <div class="ui simple dropdown bottom right item" *ngIf="loggedIn">
+    <div class="text">jkuri88@gmail.com</div>
+    <i class="dropdown icon"></i>
+    <div class="menu">
+      <a class="item" [routerLink]="['/Settings']">Settings</a>
+      <div class="divider"></div>
+      <a class="item" (click)="logout()">Logout</a>
+    </div>
+  </div>
+</div>

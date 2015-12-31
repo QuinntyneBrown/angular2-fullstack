@@ -2,12 +2,15 @@
 
 module.exports = function (grunt) {
 
+  var path = require('path');
+
   require('time-grunt')(grunt);
 
   var config = {
     src                 : 'src',
     dist                : 'dist',
     assets              : 'assets',
+    server              : 'server',
     build_notifications : true
   };
 
@@ -15,7 +18,17 @@ module.exports = function (grunt) {
     config: config,
     watch: {
       options: {
-        livereload: true
+        livereload: true,
+        spawn: false
+      },
+      hapi: {
+        files: [
+          '<%= config.server %>/**/*.js'
+        ],
+        tasks: [
+          'jshint',
+          'hapi'
+        ]
       },
       ts: {
         files: ['<%= config.src %>/**/*.ts'],
@@ -48,23 +61,19 @@ module.exports = function (grunt) {
         ],
         tasks: [
           'copy:html',
-          'htmlmin'
+          'htmlmin',
+          'inject_livereload'
         ]
       }
     },
-    connect: {
+    // HapiJS
+    hapi: {
       server: {
         options: {
-          hostname: '0.0.0.0',
-          port: 3000,
-          base: {
-            path: './',
-            options: {
-              index: 'dist/index.html'
-            }
-          },
-          open: true,
-          livereload: true
+          server: path.resolve('<%= config.server %>/dev.js'),
+          bases: {
+            '/dist': path.resolve('./<%= config.dist %>')
+          }
         }
       }
     },
@@ -153,7 +162,7 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           cwd: '<%= config.dist %>',
-          src: '**/*.html',
+          src: 'index.html',
           dest: '<%= config.dist %>',
           ext: '.html'
         }]
@@ -216,15 +225,32 @@ module.exports = function (grunt) {
         }
       }
     },
+    // Server tasks
+    jshint: {
+      options: {
+        jshintrc: '.jshintrc'
+      },
+      all: [
+        'Gruntfile.js',
+        '<%= config.server %>/**/*.js'
+      ]
+    },
     notify_hooks: {
       options: {
         tslint_enabled: true
+      }
+    },
+    inject_livereload: {
+      files: ['<%= config.dist %>/index.html']
+    },
+    open: {
+      dev: {
+        path: 'http://0.0.0.0:3000'
       }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-sass');
@@ -237,6 +263,11 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-notify');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-hapi');
+  grunt.loadNpmTasks('grunt-open');
+
+  grunt.loadTasks('tasks');
 
   grunt.task.run('notify_hooks');
 
@@ -251,9 +282,12 @@ module.exports = function (grunt) {
     'cssmin',
     'copy:html',
     'htmlmin',
+    'inject_livereload',
     'copy:assets',
     'clean:baseDirFile',
-    'connect:server',
+    'jshint',
+    'hapi',
+    'open',
     'watch'
   ]);
 
@@ -270,6 +304,7 @@ module.exports = function (grunt) {
     'cssmin',
     'copy:html',
     'htmlmin',
+    'jshint',
     'copy:assets',
     'clean:baseDirFile'
   ]);

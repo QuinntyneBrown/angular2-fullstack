@@ -1,0 +1,165 @@
+<div class="ui container text documentation">
+  <h1>Documentation</h1>
+
+  <h2>1. Installation</h2>
+  <p>
+    First of all, clone/fork repository from Github.
+  </p>
+  <pre>
+    <code>
+git clone https://github.com/jkuri/angular2-fullstack my-app
+    </code>
+  </pre>
+  <p>
+    In the next spet, we`ll install all the dependencies.
+  </p>
+  <pre>
+    <code>
+cd my-app
+npm install
+    </code>
+  </pre>
+  <p>
+    When it comes to prompting the configuration about semantic, install it to the semantic/ directory. <br/>
+    In other words, just hit the enter 4 or 5 times and you`re done with that. <br/>
+    Then we need to build the semantic framework.
+  </p>
+  <pre>
+    <code>
+cd semantic
+gulp build
+cd ..
+    </code>
+  </pre>
+  <p>
+    If it says `gulp: command not found` then, you need to install it first.
+  </p>
+  <pre>
+    <code>
+[sudo] npm install gulp -g
+    </code>
+  </pre>
+  <p>
+    Then repeat entering commands above. <br/>
+    And that`s it! We succesfully installed the angular2-fullstack package!
+  </p>
+
+  <h2>2. Configuration</h2>
+  <p>
+    As authentication works throuht database, we need to create it first. The table where we store users it's really simple, the simple as can be. We store id, email (as username) and password (brcypted). <br/>
+    If you dont have any *SQL database installed, now it`s time to do so. <br/>
+    When you are all set up create a table in your database like;
+  </p>
+  <pre>
+    <code>
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+    </code>
+  </pre>
+  <p>
+    Note as this is example for MySQL, if you`re using some other database the syntax may differ. <br/><br/>
+    Then insert a user in the database, in this example we`ll insert a user with credentials user@example.com / password.
+  </p>
+  <pre>
+    <code>
+INSERT INTO `users` 
+VALUES 
+(1,'
+ user@example.com',
+ '$2a$12$FxcMvqu0tb6u0aoyZ8BlmOhBZCTzBa0lKtj2mkcYskI0zIwEWE/Om');
+    </code>
+  </pre>
+  <p>
+    That`s it, you will now be able to login to your application. <br><br/>
+    And now is time to set up the parametes for our application. The parameters holds in `server/config/constants.js` file and looks like;
+  </p>
+  <pre>
+    <code>
+'use strict';
+
+module.exports = {
+  dev_port      : 3000,
+  prod_port     : 13535,
+  db_host       : 'localhost',
+  db_port       : 3306,
+  db_user       : 'root',
+  db_password   : '',
+  db_name       : 'jan',
+  token         : 'MySecretToken'
+};
+    </code>
+  </pre>
+  <p>
+    We won`t be loosing words about what means single variable in that configuration, but it worths to mention abou token. Just set it to some random string, like you store you password or so. The token variable is used by JWT or JSON Web Token for authentication, more specifficaly for decoding and encoding the JWTs. When we`re all set up, we have nothing more to do than just run the app.
+  </p>
+
+  <h2>3. Development mode</h2>
+  <p>
+    Run the application in development mode by just typing ...
+  </p>
+  <pre>
+    <code>
+grunt
+    </code>
+  </pre>
+  <p>
+   ... in the root directory of our application. Now you`ll be enjoing development with automatic css minification, html minification, auto reload, TypeScript linting, JavaScript linting the server instance and also notifications about errors in the notifications center or growl if you prefer it.
+  </p>
+
+  <h2>4. Production mode</h2>
+  <p>
+    When our application is done we just run:
+  </p>
+  <pre>
+    <code>
+grunt build
+node server/prod.js
+    </code>
+  </pre>
+  <p>
+    We'll get an output similar like that:
+  </p>
+  <pre>
+    <code>
+Server running at port 13535
+    </code>
+  </pre>
+  <p>
+    Note that in production we want to run server all the time, without failure (if that`s possible) so we will use pm2 or forever from node. Choose one. I prefer pm2, so I'll give an example for that one.
+  </p>
+  <pre>
+    <code>
+[sudo] npm install pm2 -g
+pm2 start server/prod.js
+    </code>
+  </pre>
+  <p>
+    Now our application will run *forever*. <br/>
+    But hey! Our application run on port 13535, but HTTP port works on 80, so what are we gonna do know? <br/>
+    We`ll set up a nginx fastcgi proxy server, and this is an example of how to configure one:
+  </p>
+  <pre>
+    <code>
+server {
+  listen 80;
+  server_name www.example.com example.com;
+
+  location / {
+    proxy_pass http://localhost:13535;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+  }
+}
+    </code>
+  </pre>
+  <p>Then restart the nginx server and we are all done!</p>
+
+</div>

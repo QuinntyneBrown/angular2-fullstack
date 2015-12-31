@@ -31,11 +31,17 @@
     <link rel="icon" type="image/png" href="dist/assets/img/favicons/favicon-96x96.png" sizes="96x96">
     <link rel="icon" type="image/png" href="dist/assets/img/favicons/favicon-16x16.png" sizes="16x16">
     <link rel="manifest" href="dist/assets/img/favicons/manifest.json">
+    <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
     <link rel="stylesheet" type="text/css" href="dist/assets/css/main.css">
   </head>
   <body>
     
-    <app></app>
+    <app>
+      <div class="ui active inverted dimmer loading-page-container">
+        <div class="ui text large loader">Loading</div>
+      </div>
+      <p></p>
+    </app>
 
     <script src="dist/vendor/bundle.js"></script>
     <script>
@@ -45,7 +51,8 @@
         },
         map: {
           'angular2': 'node_modules/angular2',
-          'rxjs': 'node_modules/rxjs'
+          'rxjs': 'node_modules/rxjs',
+          'angular2-jwt': 'node_modules/angular2-jwt/angular2-jwt.js'
         }
       });
       System.import('dist/bootstrap')

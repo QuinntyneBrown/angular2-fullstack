@@ -1,0 +1,53 @@
+<div class="ui text container">
+  <div class="column">
+    <h2 class="ui center aligned icon header">
+      Login
+    </h2>
+  </div>
+  <div class="column login-form">
+    <div class="ui error message floating" *ngIf="loginError">
+      <i class="icon lock"></i>
+      Invalid username and password combination.
+    </div>
+    <div class="ui info icon message floating" *ngIf="loading">
+      <i class="notched circle loading icon"></i>
+      <div class="content">
+        <div class="header">
+          Please wait
+        </div>
+        <p>Checking credentials ...</p>
+      </div>
+    </div>
+    <form class="ui large form" #loginForm="ngForm">
+      <div class="ui stacked segment">
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" 
+                   name="email" 
+                   placeholder="E-mail address" 
+                   [(ngModel)]="user.email"
+                   ngControl="email"
+                   required>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" 
+                   name="password" 
+                   placeholder="Password" 
+                   [(ngModel)]="user.password"
+                   ngControl="email"
+                   required>
+          </div>
+        </div>
+        <button class="ui large primary submit button center" 
+                [disabled]="!loginForm.form.valid"
+                (click)="login()">
+          Login
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
